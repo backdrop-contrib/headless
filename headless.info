@@ -1,0 +1,5 @@
+name = Headless
+description = "Headless is an API to deliver nodes and lists of nodes as JSON data."
+backdrop = 1.x
+type = module
+version = 1.x-1.0.0

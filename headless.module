@@ -1,0 +1,45 @@
+<?php
+/**
+ * big module
+ */
+function headless_menu() {
+  $items = array();
+  // Return JSON for individual nodes.
+  $items['api/%/%'] = array(
+    'page callback' => 'headless_type',
+    'access callback' => TRUE,
+    'page arguments' => array(1, 2),
+  );
+  // Get a list of nodes of type '%'.
+  $items['api/list/%'] = array(
+    'page callback' => 'headless_list',
+    'access callback' => TRUE,
+    'page arguments' => array(2),
+  );
+  return $items;
+}
+
+/**
+ * page call back for Backdrop CMS installation
+ * node types.
+ */
+function headless_type($type, $nid) {
+  $my_json = node_load($nid);
+  backdrop_json_output($my_json);
+  backdrop_exit();
+}
+
+/**
+ * page call back for list of nodes of a given type.
+ */
+function headless_list($type) {
+  $sql = "select nid from node where type = :type";
+  $result = db_query($sql, array(':type' => $type));
+  $data = array();
+  foreach($result as $r) {
+    $list = node_load($r->nid);
+    $data[] = $list;
+  }
+  backdrop_json_output($data);
+  backdrop_exit();
+}
