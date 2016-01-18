@@ -3,7 +3,7 @@ Headless
 Headless is an API to deliver nodes and lists of nodes as JSON data.
 
 This allows you to publish content to you Backdrop site and send it out to other applications.  For example you could have an
-Apache Cordovo app that polls for the latest news posts on your site and renders them as a native iOS or Android app to users'
+Apache Cordovo app that polls for the latest news posts on your site and renders them in a native iOS or Android app on users'
 mobile phones.
 
 * Exposes individual nodes as JSON data to be consumed by another application.
