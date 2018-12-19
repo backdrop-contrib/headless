@@ -29,7 +29,22 @@ function headless_settings_form($form, &$form_state) {
     '#options' => $nodeTypeOptions,
     '#title' =>
       t('Check off the Node Types you would like to expose as json endpoints.'),
-    );
+  );
+  $vocabularyTypes = taxonomy_get_vocabularies();
+  $vocabularyTypeOptions = [];
+  foreach($vocabularyTypes as $key => $type) {
+    $vocabularyTypeOptions[$key] = $key;
+  }
+  $form['vocabularies'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Vocabulary Types',
+  );
+  $form['vocabularies']['vocabularies-checkboxes'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $vocabularyTypeOptions,
+    '#title' =>
+      t('Check off the Vocabularies you would like to expose as json endpoints.'),
+  );
   if (module_exists('paragraphs')) {
     $paragraphsTypes = paragraphs_bundle_load();
     $paragraphsTypeOptions = [];
@@ -47,21 +62,6 @@ function headless_settings_form($form, &$form_state) {
         t('Check off the Paragraph Types you would like to expose as json endpoints.'),
     );
   }
-  $vocabularyTypes = taxonomy_get_vocabularies();
-  $vocabularyTypeOptions = [];
-  foreach($vocabularyTypes as $key => $type) {
-    $vocabularyTypeOptions[$key] = $key;
-  }
-  $form['vocabularies'] = array(
-    '#type' => 'fieldset',
-    '#title' => 'Vocabulary Types',
-  );
-  $form['vocabularies']['vocabularies-checkboxes'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $vocabularyTypeOptions,
-    '#title' =>
-      t('Check off the Paragraph Types you would like to expose as json endpoints.'),
-  );
 
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
