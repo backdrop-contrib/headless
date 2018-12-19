@@ -1,0 +1,10 @@
+{
+    "_config_name": "headless.settings",
+    "node": {
+        "post": 0,
+        "page": 0
+    },
+    "vocabularies": {
+        "tags": 0
+    }
+}
