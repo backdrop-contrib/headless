@@ -22,12 +22,14 @@ function headless_menu() {
     'access callback' => TRUE,
     'page arguments' => array(2),
   );
-  // Return json for individual paragraphs.
-  $items['api/paragraphs/%'] = array(
-    'page callback' => 'headless_paragraphs_item',
-    'access callback' => TRUE,
-    'page arguments' => array(2),
-  );
+  if (module_exists('paragraphs')) {
+    // Return json for individual paragraphs.
+    $items['api/paragraphs/%'] = array(
+      'page callback' => 'headless_paragraphs_item',
+      'access callback' => TRUE,
+      'page arguments' => array(2),
+    );
+  }
   $items['admin/config/services/headless'] = array(
     'title' => 'Headless settings',
     'description' => 'Configure the entity types you wish to expose as json endpoints.',
