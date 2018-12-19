@@ -10,12 +10,33 @@ function headless_menu() {
     'access callback' => TRUE,
     'page arguments' => array(1, 2),
   );
+  // Return JSON for individual terms.
+  $items['api/%/%'] = array(
+    'page callback' => 'headless_term_item',
+    'access callback' => TRUE,
+    'page arguments' => array(1, 2),
+  );
   // Get a list of nodes of type '%'.
   $items['api/list/%'] = array(
     'page callback' => 'headless_list',
     'access callback' => TRUE,
     'page arguments' => array(2),
   );
+  // Return json for individual paragraphs.
+  $items['api/paragraphs/%'] = array(
+    'page callback' => 'headless_paragraphs_item',
+    'access callback' => TRUE,
+    'page arguments' => array(2),
+  );
+  $items['admin/config/services/headless'] = array(
+    'title' => 'Headless settings',
+    'description' => 'Configure the entity types you wish to expose as json endpoints.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('headless_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'headless.admin.inc',
+  );
+
   return $items;
 }
 
@@ -41,5 +62,17 @@ function headless_list($type) {
     $data[] = $list;
   }
   backdrop_json_output($data);
+  backdrop_exit();
+}
+
+function headless_term_item($vocab, $tid) {
+  $my_json = taxonomy_term_load($tid);
+  backdrop_json_output($my_json);
+  backdrop_exit();
+}
+
+function headless_paragraphs_item($entity_id) {
+  $result = paragraphs_item_load($entity_id);
+  backdrop_json_output($result);
   backdrop_exit();
 }
