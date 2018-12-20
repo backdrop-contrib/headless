@@ -1,17 +1,45 @@
 Headless
----
-Headless is an API to deliver nodes and lists of nodes as JSON data.
+========
 
-This allows you to publish content to your Backdrop site and send it out to other applications.  For example you could have an
-Apache Cordovo app that polls for the latest news posts on your site and renders them in a native iOS or Android app on users'
-mobile phones.
+Headless is a read only API to deliver Backdrop nodes, terms, views, and
+paragraphs as json endpoints.
 
-* Exposes individual nodes as JSON data to be consumed by another application.
-  * Once the `headless` module is installed visiting a URL using this form: http://mysite.com/api/page/16 will expose that node as a JSON object.
-    * You can replace `page` with any content type on your site
-    * You replace `16` with the node id (`nid`) of the content that you want to recieve as JSON data. 
-* Expose lists of nodes as JSON data.
-  * Visit a URL using this form:  http://mysite.com/api/list/post
+Features
+--------
+
+This allows you to publish content to your Backdrop site and send it out to
+other applications.  For example you could have a [nuxt](https://nuxtjs.org)
+front end app and an Apache Cordovo app both pulling in content from the
+endpoints.
+
+In this way you get all the power of Backdrop CMS:
+  - Authoring experience
+  - Structured content
+    - Custom content types
+    - fieldable
+    - views
+
+That you can deliver to any consumer app you want.
+
+
+Usage
+-----
+
+To configure which entities you would like to expose as json endpoints:
+
+  * Visit: `/admin/config/services/headless`
+    * Check off the entities you would like to expose
+    * Save the configuration form
+
+Endpoints:
+
+  * Nodes: `/api/node/{type}/{id}`
+    * for example the default `/about` page is available at `/api/node/page/2`
+      * Assuming you've checked off to allow the `page` type as exposed on
+        `/admin/config/services/headless`
+  * Terms: `/api/{vocabulary}/term/{id}`
+  * Views: `/api/views/{view_name}`
+  * Paragraphs: `/api/paragraphs/{type}/{id}`
 
 License
 -------
