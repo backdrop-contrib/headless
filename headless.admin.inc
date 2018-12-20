@@ -25,29 +25,15 @@ function headless_settings_form($form, &$form_state) {
   foreach($nodeTypes as $key => $type) {
     $nodeTypeOptions[$key] = $key;
   }
-  $nodeChecked = [];
-  foreach(config_get('headless.settings', 'node') as $key => $type) {
-    if ($type != 0) {
-      $nodeChecked[] = $key;
-    }
-  }
   $form['nodes']['node-checkboxes'] = array(
     '#type' => 'checkboxes',
     '#options' => $nodeTypeOptions,
-    '#title' =>
-      t('Check off the Node Types you would like to expose as json endpoints.'),
-    '#default_value' => $nodeChecked,
+    '#default_value' => _headless_get_default_options('node'),
   );
   $vocabularyTypes = taxonomy_get_vocabularies();
   $vocabularyTypeOptions = [];
   foreach($vocabularyTypes as $key => $type) {
     $vocabularyTypeOptions[$key] = $key;
-  }
-  $vocabChecked = [];
-  foreach(config_get('headless.settings', 'vocabularies') as $key => $type) {
-    if ($type != 0) {
-      $vocabChecked[] = $key;
-    }
   }
   $form['vocabularies'] = array(
     '#type' => 'fieldset',
@@ -58,21 +44,25 @@ function headless_settings_form($form, &$form_state) {
   $form['vocabularies']['vocabularies-checkboxes'] = array(
     '#type' => 'checkboxes',
     '#options' => $vocabularyTypeOptions,
-    '#title' =>
-      t('Check off the Vocabularies you would like to expose as json endpoints.'),
-    '#default_value' => $vocabChecked,
+    '#default_value' => _headless_get_default_options('vocabularies'),
+  );
+  $form['views'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Views',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $myViews = views_get_views_as_options(TRUE, 'enabled', NULL, TRUE, TRUE);
+  $form['views']['views-checkboxes'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $myViews,
+    '#default_value' => _headless_get_default_options('views'),
   );
   if (module_exists('paragraphs')) {
     $paragraphsTypes = paragraphs_bundle_load();
     $paragraphsTypeOptions = [];
     foreach($paragraphsTypes as $key => $type) {
       $paragraphsTypeOptions[$key] = $key;
-    }
-    $paraChecked = [];
-    foreach(config_get('headless.settings', 'paragraphs') as $key => $type) {
-      if ($type != 0) {
-        $paraChecked[] = $key;
-      }
     }
     $form['paragraphs'] = array(
       '#type' => 'fieldset',
@@ -83,9 +73,7 @@ function headless_settings_form($form, &$form_state) {
     $form['paragraphs']['paragraphs-checkboxes'] = array(
       '#type' => 'checkboxes',
       '#options' => $paragraphsTypeOptions,
-      '#title' =>
-        t('Check off the Paragraph Types you would like to expose as json endpoints.'),
-      '#default_value' => $paraChecked,
+      '#default_value' => _headless_get_default_options('paragraphs'),
     );
   }
 
@@ -122,6 +110,26 @@ function headless_settings_form_submit($form, &$form_state) {
     }
     config_set('headless.settings', 'vocabularies.' . $type, $val);
   }
+  foreach($form_state['input']['views-checkboxes'] as $type => $value) {
+    if ($value != NULL) {
+      $val = 1;
+    }
+    else {
+      $val = 0;
+    }
+    config_set('headless.settings', 'views.' . $type, $val);
+  }
+  if (isset($form_state['input']['views-checkboxes'])) {
+    foreach($form_state['input']['views-checkboxes'] as $type => $value) {
+      if ($value != NULL) {
+        $val = 1;
+      }
+      else {
+        $val = 0;
+      }
+      config_set('headless.settings', 'views.' . $type, $val);
+    }
+  }
   if (isset($form_state['input']['paragraphs-checkboxes'])) {
     foreach($form_state['input']['paragraphs-checkboxes'] as $type => $value) {
       if ($value != NULL) {
@@ -136,4 +144,28 @@ function headless_settings_form_submit($form, &$form_state) {
 
   backdrop_set_message(t('The Headless configuration has been saved.'));
   $form_state['redirect'] = 'admin/config/services/headless';
+}
+
+/**
+ * Helper function to get the #default_options for a type.
+ *
+ * @param string $types
+ *   The type of entity to get the defaults for one of:
+ *     - node
+ *     - vocabularies
+ *     - views
+ *     - paragraphs
+ *
+ * @return array
+ *   An array of the currently selected types.
+ */
+function _headless_get_default_options($types) {
+  $checked = [];
+  foreach(config_get('headless.settings', $types) as $key => $type) {
+    if ($type != 0) {
+      $checked[] = $key;
+    }
+  }
+
+  return $checked;
 }
