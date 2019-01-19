@@ -1,6 +1,6 @@
 <?php
 /**
- * big module
+ * Headless allows you to use Backdrop CMS as an API.
  */
 function headless_menu() {
   $items = array();
@@ -35,7 +35,17 @@ function headless_menu() {
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('headless_settings_form'),
     'access arguments' => array('administer site configuration'),
-    'file' => 'headless.admin.inc',
+    'file' => 'includes/headless.admin.inc',
+  );
+
+  // Router: allow API queries via string paths.
+  $items['api/router/%'] = array(
+    'title' => 'Headless router',
+    'description' => 'Allow queries via string like /api/my-node-title',
+    'page callback' => 'headless_router',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'file' => 'includes/headless.router.inc',
   );
 
   return $items;
