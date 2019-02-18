@@ -117,7 +117,7 @@ function headless_settings_form($form, &$form_state) {
     }
     else {
       foreach($paragraphsTypes as $key => $type) {
-        $paragraphsTypeOptions[$key] = $key;
+        $paragraphsTypeOptions[$key] = $type->name;
       }
       $form['paragraphs']['paragraphs-checkboxes'] = array(
         '#type' => 'checkboxes',
