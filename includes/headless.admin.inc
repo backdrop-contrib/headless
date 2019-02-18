@@ -9,72 +9,123 @@
  */
 function headless_settings_form($form, &$form_state) {
   $form['help'] = array(
-    '#markup' => '<div class="headless-settings__help">
-      Use this form to select wich entities you would like to expose
-      as json endpoints.
-    </div>',
+    '#markup' => '<div class="headless-settings__help">' . t('Use this form to select wich entities you would like to expose as JSON endpoints.') . '</div>',
   );
+
+  // Get all available content types.
+  $nodeTypes = node_type_get_types();
+
   $form['nodes'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Node Types',
+    '#title' => t('Content types'),
     '#collapsible' => TRUE,
   );
-  // Get the node types.
-  $nodeTypes = node_type_get_types();
-  $nodeTypeOptions = [];
-  foreach($nodeTypes as $key => $type) {
-    $nodeTypeOptions[$key] = $key;
+
+  if (empty($nodeTypes)) {
+    $form['nodes']['node-empty'] = array(
+      '#markup' => t('No content types defined yet. <a href="@url">Manage content types</a>', array('@url' => url('admin/structure/types'))),
+    );
   }
-  $form['nodes']['node-checkboxes'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $nodeTypeOptions,
-    '#default_value' => _headless_get_default_options('node'),
-  );
-  $vocabularyTypes = taxonomy_get_vocabularies();
-  $vocabularyTypeOptions = [];
-  foreach($vocabularyTypes as $key => $type) {
-    $vocabularyTypeOptions[$key] = $key;
+  else {
+    $nodeTypeOptions = [];
+    foreach($nodeTypes as $key => $type) {
+      $nodeTypeOptions[$key] = $type->name;
+    }
+    $form['nodes']['node-checkboxes'] = array(
+      '#type' => 'checkboxes',
+      '#options' => $nodeTypeOptions,
+      '#default_value' => _headless_get_default_options('node'),
+    );
   }
-  $form['vocabularies'] = array(
-    '#type' => 'fieldset',
-    '#title' => 'Vocabulary Types',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['vocabularies']['vocabularies-checkboxes'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $vocabularyTypeOptions,
-    '#default_value' => _headless_get_default_options('vocabularies'),
-  );
+
+  // Get all available vocabularies (if the Taxonomy module is enabled).
+  if (module_exists('taxonomy')) {
+    $vocabularyTypes = taxonomy_get_vocabularies();
+
+    $form['vocabularies'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Taxonomy vocabularies'),
+      '#collapsible' => TRUE,
+      // Collapsed by default. Expand if no vocabularies defined.
+      '#collapsed' => !empty($vocabularyTypes),
+    );
+
+    if (empty($vocabularyTypes)) {
+      $form['vocabularies']['vocabularies-empty'] = array(
+        '#markup' => t('No taxonomy vocabularies defined yet. <a href="@url">Manage vocabularies</a>', array('@url' => url('admin/structure/taxonomy'))),
+      );
+    }
+    else {
+      $vocabularyTypeOptions = [];
+      foreach($vocabularyTypes as $key => $type) {
+        $vocabularyTypeOptions[$key] = $type->name;
+      }
+      $form['vocabularies']['vocabularies-checkboxes'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $vocabularyTypeOptions,
+        '#default_value' => _headless_get_default_options('vocabularies'),
+      );
+    }
+
+  }
+
+  // Get all available views.
+  $myViews = views_get_views_as_options(TRUE, 'enabled', NULL, TRUE, TRUE);
+
   $form['views'] = array(
     '#type' => 'fieldset',
-    '#title' => 'Views',
+    '#title' => t('Views'),
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    // Collapsed by default. Expand if no views defined.
+    '#collapsed' => !empty($myViews),
   );
-  $myViews = views_get_views_as_options(TRUE, 'enabled', NULL, TRUE, TRUE);
-  $form['views']['views-checkboxes'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $myViews,
-    '#default_value' => _headless_get_default_options('views'),
-  );
+
+  if (empty($myViews)) {
+    $no_views = t('No views defined yet.');
+    if (module_exists('views_ui')) {
+      $no_views .= ' ' . l(t('Manage views'), 'admin/structure/views');
+    }
+    $form['views']['views-empty'] = array(
+      '#markup' => $no_views,
+    );
+  }
+  else {
+    $form['views']['views-checkboxes'] = array(
+      '#type' => 'checkboxes',
+      '#options' => $myViews,
+      '#default_value' => _headless_get_default_options('views'),
+    );
+  }
+
+  // Get all available paragraph types (if the Paragraphs module is enabled).
   if (module_exists('paragraphs')) {
     $paragraphsTypes = paragraphs_bundle_load();
     $paragraphsTypeOptions = [];
-    foreach($paragraphsTypes as $key => $type) {
-      $paragraphsTypeOptions[$key] = $key;
-    }
+
     $form['paragraphs'] = array(
       '#type' => 'fieldset',
-      '#title' => 'Paragraphs Types',
+      '#title' => t('Paragraph types'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+      // Collapsed by default. Expand if no paragraph types defined.
+      '#collapsed' => !empty($paragraphsTypes),
     );
-    $form['paragraphs']['paragraphs-checkboxes'] = array(
-      '#type' => 'checkboxes',
-      '#options' => $paragraphsTypeOptions,
-      '#default_value' => _headless_get_default_options('paragraphs'),
-    );
+
+    if (empty($paragraphsTypes)) {
+      $form['paragraphs']['paragraphs-empty'] = array(
+        '#markup' => t('No paragraphs defined yet. <a href="@url">Manage paragraph types</a>', array('@url' => url('admin/structure/paragraphs'))),
+      );
+    }
+    else {
+      foreach($paragraphsTypes as $key => $type) {
+        $paragraphsTypeOptions[$key] = $key;
+      }
+      $form['paragraphs']['paragraphs-checkboxes'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $paragraphsTypeOptions,
+        '#default_value' => _headless_get_default_options('paragraphs'),
+      );
+    }
+  
   }
 
   $form['actions'] = array('#type' => 'actions');
