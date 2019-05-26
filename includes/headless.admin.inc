@@ -161,9 +161,13 @@ function headless_settings_form_submit($form, &$form_state) {
  */
 function _headless_get_default_options($types) {
   $checked = [];
-  foreach(config_get('headless.settings', $types) as $key => $type) {
-    if ($type != 0) {
-      $checked[] = $key;
+  $types = config_get('headless.settings', $types);
+
+  if (isset($types)) {
+    foreach($types as $key => $type) {
+      if ($type != 0) {
+        $checked[] = $key;
+      }
     }
   }
 
