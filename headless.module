@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Headless allows you to use Backdrop CMS as an API.
@@ -14,6 +15,11 @@ function headless_menu() {
     'page callback' => 'headless_type',
     'access callback' => TRUE,
     'page arguments' => array(2, 3),
+  );
+  $items['api/v2/node/%/%'] = array(
+    'page callback' => 'headless_type_v2',
+    'access callback' => TRUE,
+    'page arguments' => array(3, 4),
   );
   // Return JSON for individual terms.
   $items['api/%/term/%'] = array(
@@ -63,6 +69,8 @@ function headless_menu() {
 
 /**
  * Page callback for node types.
+ *
+ * This is kept to make it backwards compatible
  */
 function headless_type($type, $nid) {
   $config = config_get('headless.settings', 'node');
@@ -72,6 +80,22 @@ function headless_type($type, $nid) {
     backdrop_exit();
   }
   $my_json = node_load($nid);
+  backdrop_json_output($my_json);
+  backdrop_exit();
+}
+
+/**
+ * Page callback for node types v2.
+ */
+function headless_type_v2($type, $nid) {
+  $config = config_get('headless.settings', 'node');
+  if ($config[$type] != 1) {
+    $json_error = ['code' => 404];
+    backdrop_json_output($json_error);
+    backdrop_exit();
+  }
+  $node = node_load($nid);
+  $my_json = node_view($node);
   backdrop_json_output($my_json);
   backdrop_exit();
 }
@@ -94,7 +118,7 @@ function headless_term_item($vocab, $tid) {
 /**
  * Page callback for views.
  *
- * This is to make it backwards compatible
+ * This is kept to make it backwards compatible
  */
 function headless_views($view) {
   $config = config_get('headless.settings', 'views');
@@ -130,10 +154,11 @@ function headless_views_v2($view, $display_id) {
     'results' => $return['results'],
     'total_items' => $return['total_items'],
     'items_per_page' => $return['items_per_page'],
-    'total_pages' => ceil($return['total_items'] / $return['items_per_page']),
+    'total_pages' => (isset($return['items_per_page'])) ?: ceil($return['total_items'] / $return['items_per_page']),
     'current_page' => $return['current_page'],
   ];
   backdrop_json_output($my_json);
+  json_last_error_msg();
   backdrop_exit();
 }
 
@@ -153,17 +178,15 @@ function headless_paragraphs_item($type, $entity_id) {
 }
 
 /**
- * Helper function to add pager data to /api/v2/views/%/% endpoints.
+ * Helper function.
  *
  * We mimic the core function to add some extra pager data to the
  * returned value.
  */
 function _views_get_view_result($name, $display_id = NULL) {
   $args = func_get_args();
-  // Remove $name.
   array_shift($args);
   if (count($args)) {
-    // Remove $display_id.
     array_shift($args);
   }
 
