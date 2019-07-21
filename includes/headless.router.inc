@@ -1,7 +1,8 @@
 <?php
 /**
+ * @file
  * Router: allow API queries via strings in URL path.
- *  The router will try to resolve a string to an API asset.
+ * The router will try to resolve a string to an API asset.
  */
 
 /**
@@ -18,7 +19,7 @@ function headless_router(string $path) {
     ->condition('alias', '%' . db_like($path) . '%', 'LIKE')
     ->addTag('node_access')
     ->execute();
-  foreach($query as $i => $asset) {
+  foreach ($query as $i => $asset) {
     $assets[] = $asset;
   }
   $source = $assets[0]->source;

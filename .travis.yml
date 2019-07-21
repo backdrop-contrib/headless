@@ -1,0 +1,21 @@
+language: php
+dist: xenial
+php:
+  - 7.2
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+    - $HOME/.composer/cache/repo
+services:
+  - mysql
+addons:
+  - mariadb: '10.0'
+before_install:
+  - composer install
+
+script:
+  # Check code standards
+  - vendor/bin/phpcs -n --standard=vendor/backdrop/coder/coder_sniffer/Backdrop --ignore="vendor/*,README.md" --extensions=install,module,php,inc,theme .
+
+  # Unit tests
+

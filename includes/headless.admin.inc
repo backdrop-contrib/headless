@@ -8,11 +8,13 @@
  * Headless configuration form.
  */
 function headless_settings_form($form, &$form_state) {
+  $help = '
+    <div class="headless-settings__help">
+      Use this form to select wich entities you would like to expose as json endpoints.
+    </div>
+  ';
   $form['help'] = array(
-    '#markup' => '<div class="headless-settings__help">
-      Use this form to select wich entities you would like to expose
-      as json endpoints.
-    </div>',
+    '#markup' => $help,
   );
   $form['nodes'] = array(
     '#type' => 'fieldset',
@@ -20,20 +22,20 @@ function headless_settings_form($form, &$form_state) {
     '#collapsible' => TRUE,
   );
   // Get the node types.
-  $nodeTypes = node_type_get_types();
-  $nodeTypeOptions = [];
-  foreach($nodeTypes as $key => $type) {
-    $nodeTypeOptions[$key] = $key;
+  $node_types = node_type_get_types();
+  $node_type_options = [];
+  foreach ($node_types as $key => $type) {
+    $node_type_options[$key] = $key;
   }
   $form['nodes']['node-checkboxes'] = array(
     '#type' => 'checkboxes',
-    '#options' => $nodeTypeOptions,
+    '#options' => $node_type_options,
     '#default_value' => _headless_get_default_options('node'),
   );
-  $vocabularyTypes = taxonomy_get_vocabularies();
-  $vocabularyTypeOptions = [];
-  foreach($vocabularyTypes as $key => $type) {
-    $vocabularyTypeOptions[$key] = $key;
+  $vocabulary_types = taxonomy_get_vocabularies();
+  $vocabulary_type_options = [];
+  foreach ($vocabulary_types as $key => $type) {
+    $vocabulary_type_options[$key] = $key;
   }
   $form['vocabularies'] = array(
     '#type' => 'fieldset',
@@ -43,7 +45,7 @@ function headless_settings_form($form, &$form_state) {
   );
   $form['vocabularies']['vocabularies-checkboxes'] = array(
     '#type' => 'checkboxes',
-    '#options' => $vocabularyTypeOptions,
+    '#options' => $vocabulary_type_options,
     '#default_value' => _headless_get_default_options('vocabularies'),
   );
   $form['views'] = array(
@@ -52,17 +54,17 @@ function headless_settings_form($form, &$form_state) {
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $myViews = views_get_views_as_options(TRUE, 'enabled', NULL, TRUE, TRUE);
+  $my_views = views_get_views_as_options(TRUE, 'enabled', NULL, TRUE, TRUE);
   $form['views']['views-checkboxes'] = array(
     '#type' => 'checkboxes',
-    '#options' => $myViews,
+    '#options' => $my_views,
     '#default_value' => _headless_get_default_options('views'),
   );
   if (module_exists('paragraphs')) {
-    $paragraphsTypes = paragraphs_bundle_load();
-    $paragraphsTypeOptions = [];
-    foreach($paragraphsTypes as $key => $type) {
-      $paragraphsTypeOptions[$key] = $key;
+    $paragraphs_types = paragraphs_bundle_load();
+    $paragraphs_type_options = [];
+    foreach ($paragraphs_types as $key => $type) {
+      $paragraphs_type_options[$key] = $key;
     }
     $form['paragraphs'] = array(
       '#type' => 'fieldset',
@@ -72,7 +74,7 @@ function headless_settings_form($form, &$form_state) {
     );
     $form['paragraphs']['paragraphs-checkboxes'] = array(
       '#type' => 'checkboxes',
-      '#options' => $paragraphsTypeOptions,
+      '#options' => $paragraphs_type_options,
       '#default_value' => _headless_get_default_options('paragraphs'),
     );
   }
@@ -92,7 +94,7 @@ function headless_settings_form($form, &$form_state) {
 function headless_settings_form_submit($form, &$form_state) {
   // Remove unnecessary values.
   form_state_values_clean($form_state);
-  foreach($form_state['input']['node-checkboxes'] as $type => $value) {
+  foreach ($form_state['input']['node-checkboxes'] as $type => $value) {
     if ($value != NULL) {
       $val = 1;
     }
@@ -101,7 +103,7 @@ function headless_settings_form_submit($form, &$form_state) {
     }
     config_set('headless.settings', 'node.' . $type, $val);
   }
-  foreach($form_state['input']['vocabularies-checkboxes'] as $type => $value) {
+  foreach ($form_state['input']['vocabularies-checkboxes'] as $type => $value) {
     if ($value != NULL) {
       $val = 1;
     }
@@ -110,7 +112,7 @@ function headless_settings_form_submit($form, &$form_state) {
     }
     config_set('headless.settings', 'vocabularies.' . $type, $val);
   }
-  foreach($form_state['input']['views-checkboxes'] as $type => $value) {
+  foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
     if ($value != NULL) {
       $val = 1;
     }
@@ -120,7 +122,7 @@ function headless_settings_form_submit($form, &$form_state) {
     config_set('headless.settings', 'views.' . $type, $val);
   }
   if (isset($form_state['input']['views-checkboxes'])) {
-    foreach($form_state['input']['views-checkboxes'] as $type => $value) {
+    foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
       if ($value != NULL) {
         $val = 1;
       }
@@ -131,7 +133,7 @@ function headless_settings_form_submit($form, &$form_state) {
     }
   }
   if (isset($form_state['input']['paragraphs-checkboxes'])) {
-    foreach($form_state['input']['paragraphs-checkboxes'] as $type => $value) {
+    foreach ($form_state['input']['paragraphs-checkboxes'] as $type => $value) {
       if ($value != NULL) {
         $val = 1;
       }
@@ -164,7 +166,7 @@ function _headless_get_default_options($types) {
   $types = config_get('headless.settings', $types);
 
   if (isset($types)) {
-    foreach($types as $key => $type) {
+    foreach ($types as $key => $type) {
       if ($type != 0) {
         $checked[] = $key;
       }

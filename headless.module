@@ -1,6 +1,11 @@
 <?php
 /**
+ * @file
  * Headless allows you to use Backdrop CMS as an API.
+ */
+
+/**
+ * Implements hook_menu().
  */
 function headless_menu() {
   $items = array();
@@ -88,7 +93,7 @@ function headless_term_item($vocab, $tid) {
 
 /**
  * Page callback for views.
- * 
+ *
  * This is to make it backwards compatible
  */
 function headless_views($view) {
@@ -148,16 +153,18 @@ function headless_paragraphs_item($type, $entity_id) {
 }
 
 /**
- * Helper function
+ * Helper function to add pager data to /api/v2/views/%/% endpoints.
  *
- * We mimic the core function to add some extra pager data to the 
+ * We mimic the core function to add some extra pager data to the
  * returned value.
  */
 function _views_get_view_result($name, $display_id = NULL) {
   $args = func_get_args();
-  array_shift($args); // remove $name
+  // Remove $name.
+  array_shift($args);
   if (count($args)) {
-    array_shift($args); // remove $display_id
+    // Remove $display_id.
+    array_shift($args);
   }
 
   $view = views_get_view($name);
