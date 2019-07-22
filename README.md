@@ -37,6 +37,8 @@ Endpoints:
     * for example the default `/about` page is available at `/api/node/page/2`
       * Assuming you've checked off to allow the `page` type as exposed on
         `/admin/config/services/headless`
+  * Nodes (v2): `/api/v2/node/{type}/{id}`
+    * It uses the display configuration for node types, which gives more flexibility as well as some data that was missing with the original end point, like term names on term reference fields.
   * Terms: `/api/{vocabulary}/term/{id}`
   * Views: `/api/views/{view_name}`
     * Kept for backwards compatibility.
