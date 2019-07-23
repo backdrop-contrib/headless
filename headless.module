@@ -141,14 +141,14 @@ function headless_views($view) {
  * Page callback for views v2.
  */
 function headless_views_v2($view, $display_id) {
-
+  $args = func_get_args();
   $config = config_get('headless.settings', 'views');
   if ($config[$view] != 1) {
     $json_error = ['code' => 404];
     backdrop_json_output($json_error);
     backdrop_exit();
   }
-  $return = _views_get_view_result($view, $display_id);
+  $return = _views_get_view_result($view, $display_id, $args);
 
   $my_json = [
     'results' => $return['results'],
@@ -183,8 +183,7 @@ function headless_paragraphs_item($type, $entity_id) {
  * We mimic the core function to add some extra pager data to the
  * returned value.
  */
-function _views_get_view_result($name, $display_id = NULL) {
-  $args = func_get_args();
+function _views_get_view_result($name, $display_id = NULL, $args = null) {
   array_shift($args);
   if (count($args)) {
     array_shift($args);
