@@ -183,7 +183,7 @@ function headless_paragraphs_item($type, $entity_id) {
  * We mimic the core function to add some extra pager data to the
  * returned value.
  */
-function _views_get_view_result($name, $display_id = NULL, $args = null) {
+function _views_get_view_result($name, $display_id = NULL, $args = NULL) {
   array_shift($args);
   if (count($args)) {
     array_shift($args);
