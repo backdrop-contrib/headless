@@ -8,8 +8,7 @@
 /**
  * Headless configuration form.
  */
-function headless_settings_form($form, &$form_state)
-{
+function headless_settings_form($form, &$form_state) {
   $help = '
     <div class="headless-settings__help">
       Use this form to select wich entities you would like to expose as json endpoints.
@@ -32,7 +31,8 @@ function headless_settings_form($form, &$form_state)
     $form['nodes']['node-empty'] = array(
       '#markup' => t('No content types defined yet. <a href="@url">Manage content types</a>', array('@url' => url('admin/structure/types'))),
     );
-  } else {
+  }
+  else {
     $node_type_header = array(
       'type' => t('Type'),
       'endpoint_v1' => t('End point v1'),
@@ -76,14 +76,15 @@ function headless_settings_form($form, &$form_state)
       '#title' => t('Taxonomy vocabularies'),
       '#collapsible' => TRUE,
       // Collapsed by default. Expand if no vocabularies defined.
-      //'#collapsed' => !empty($vocabulary_types),
+      // '#collapsed' => !empty($vocabulary_types),
     );
 
     if (empty($vocabulary_types)) {
       $form['vocabularies']['vocabularies-empty'] = array(
         '#markup' => t('No taxonomy vocabularies defined yet. <a href="@url">Manage vocabularies</a>', array('@url' => url('admin/structure/taxonomy'))),
       );
-    } else {
+    }
+    else {
       $vocabulary_type_header = array(
         'vocabulary' => t('Vocabulary'),
         'endpoint' => t('End point'),
@@ -119,7 +120,7 @@ function headless_settings_form($form, &$form_state)
     '#title' => t('Views'),
     '#collapsible' => TRUE,
     // Collapsed by default. Expand if no views defined.
-    //'#collapsed' => !empty($my_views),
+    // '#collapsed' => !empty($my_views),
   );
 
   if (empty($my_views)) {
@@ -130,7 +131,8 @@ function headless_settings_form($form, &$form_state)
     $form['views']['views-empty'] = array(
       '#markup' => $no_views,
     );
-  } else {
+  }
+  else {
     $my_views_header = array(
       'view' => t('View'),
       'endpoint_v1' => t('End point v1'),
@@ -174,14 +176,15 @@ function headless_settings_form($form, &$form_state)
       '#title' => t('Paragraph types'),
       '#collapsible' => TRUE,
       // Collapsed by default. Expand if no paragraph types defined.
-      //'#collapsed' => !empty($paragraphs_types),
+      // '#collapsed' => !empty($paragraphs_types),
     );
 
     if (empty($paragraphs_types)) {
       $form['paragraphs']['paragraphs-empty'] = array(
         '#markup' => t('No paragraphs defined yet. <a href="@url">Manage paragraph types</a>', array('@url' => url('admin/structure/paragraphs'))),
       );
-    } else {
+    }
+    else {
       $paragraphs_type_header = array(
         'paragraph' => t('paragraph'),
         'endpoint' => t('End point'),
@@ -220,14 +223,14 @@ function headless_settings_form($form, &$form_state)
 /**
  * Form submission handler for headless_settings_form().
  */
-function headless_settings_form_submit($form, &$form_state)
-{
+function headless_settings_form_submit($form, &$form_state) {
   // Remove unnecessary values.
   form_state_values_clean($form_state);
   foreach ($form_state['input']['node-checkboxes'] as $type => $value) {
     if ($value != NULL) {
       $val = 1;
-    } else {
+    }
+    else {
       $val = 0;
     }
     config_set('headless.settings', 'node.' . $type, $val);
@@ -235,7 +238,8 @@ function headless_settings_form_submit($form, &$form_state)
   foreach ($form_state['input']['vocabularies-checkboxes'] as $type => $value) {
     if ($value != NULL) {
       $val = 1;
-    } else {
+    }
+    else {
       $val = 0;
     }
     config_set('headless.settings', 'vocabularies.' . $type, $val);
@@ -243,7 +247,8 @@ function headless_settings_form_submit($form, &$form_state)
   foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
     if ($value != NULL) {
       $val = 1;
-    } else {
+    }
+    else {
       $val = 0;
     }
     config_set('headless.settings', 'views.' . $type, $val);
@@ -252,7 +257,8 @@ function headless_settings_form_submit($form, &$form_state)
     foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
       if ($value != NULL) {
         $val = 1;
-      } else {
+      }
+      else {
         $val = 0;
       }
       config_set('headless.settings', 'views.' . $type, $val);
@@ -262,7 +268,8 @@ function headless_settings_form_submit($form, &$form_state)
     foreach ($form_state['input']['paragraphs-checkboxes'] as $type => $value) {
       if ($value != NULL) {
         $val = 1;
-      } else {
+      }
+      else {
         $val = 0;
       }
       config_set('headless.settings', 'paragraphs.' . $type, $val);
@@ -286,8 +293,7 @@ function headless_settings_form_submit($form, &$form_state)
  * @return array
  *   An array of the currently selected types.
  */
-function _headless_get_default_options($types)
-{
+function _headless_get_default_options($types) {
   $checked = [];
   foreach (config_get('headless.settings', $types) as $key => $type) {
     if ($type != 0) {
