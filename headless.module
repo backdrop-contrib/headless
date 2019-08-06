@@ -44,6 +44,11 @@ function headless_menu() {
       'access callback' => TRUE,
       'page arguments' => array(2, 3),
     );
+    $items['api/v2/paragraphs/%/%'] = array(
+      'page callback' => 'headless_paragraphs_item_v2',
+      'access callback' => TRUE,
+      'page arguments' => array(3, 4),
+    );
   }
   $items['admin/config/services/headless'] = array(
     'title' => 'Headless settings',
@@ -173,6 +178,21 @@ function headless_paragraphs_item($type, $entity_id) {
     backdrop_exit();
   }
   $result = paragraphs_item_load($entity_id);
+  backdrop_json_output($result);
+  backdrop_exit();
+}
+
+/**
+ * Page callback for paragraph types v2.
+ */
+function headless_paragraphs_item_v2($type, $entity_id) {
+  $config = config_get('headless.settings', 'paragraphs');
+  if ($config[$type] != 1) {
+    $json_error = ['code' => 404];
+    backdrop_json_output($json_error);
+    backdrop_exit();
+  }
+  $result = paragraphs_item_load($entity_id)->view();
   backdrop_json_output($result);
   backdrop_exit();
 }

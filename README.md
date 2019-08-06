@@ -50,11 +50,14 @@ Endpoints:
         * example: `?page=0`
       * ?{exposed_filter}={value}
         * you can use also any exposed filter you have set for your view
-        * example: show only results with a title which contains a string use `?title=some_string` 
+        * example: show only results with a title which contains a string use `?title=some_string`
      * You can combine arguments by chaning them wiht a `&`
         * example: `?type=post&title=string`
      * The best way to see what are the arguments you can use is by creating the exposed filters, then go to the view, do a search and look at the url that it generates.
   * Paragraphs: `/api/paragraphs/{type}/{id}`
+    * It shows load data for a given paragraphs item
+  * Paragraphs (v2): `/api/v2/paragraphs/{type}/{id}`
+    * It shows display data for a given paragraphs item
 
 License
 -------
