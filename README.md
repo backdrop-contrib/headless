@@ -68,3 +68,4 @@ Maintainers
 -----------
 
 - Geoff St. Pierre (https://github.com/serundeputy/)
+- Robert Garrigos (https://github.com/robertgarrigos)
