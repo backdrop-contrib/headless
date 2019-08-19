@@ -253,6 +253,37 @@ function headless_settings_form($form, &$form_state) {
       '#default_value' => _headless_get_default_options('blocks'),
       '#js_select' => FALSE,
     );
+
+    if (empty($paragraphs_types)) {
+      $form['paragraphs']['paragraphs-empty'] = array(
+        '#markup' => t('No paragraphs defined yet. <a href="@url">Manage paragraph types</a>', array('@url' => url('admin/structure/paragraphs'))),
+      );
+    }
+    else {
+      $paragraphs_type_header = array(
+        'paragraph' => t('paragraph'),
+        'endpoint' => t('End point'),
+      );
+      foreach ($paragraphs_types as $key => $type) {
+        $paragraphs_type_options[$key] = array(
+          'paragraph' => $type->name,
+          'endpoint' => array(
+            'data' => array(
+              '#type' => 'link',
+              '#title' => '/api/paragraphs/' . $key . '/{id}',
+              '#href' => '/api/paragraphs/' . $key . '/{id}',
+            ),
+          ),
+        );
+      }
+      $form['paragraphs']['paragraphs-checkboxes'] = array(
+        '#type' => 'tableselect',
+        '#header' => $paragraphs_type_header,
+        '#options' => $paragraphs_type_options,
+        '#default_value' => _headless_get_default_options('paragraphs'),
+        '#js_select' => FALSE,
+      );
+    }
   }
 
   $form['actions'] = array('#type' => 'actions');
