@@ -44,7 +44,17 @@ function headless_menu() {
       'access callback' => TRUE,
       'page arguments' => array(2, 3),
     );
+    $items['api/v2/paragraphs/%/%'] = array(
+      'page callback' => 'headless_paragraphs_item_v2',
+      'access callback' => TRUE,
+      'page arguments' => array(3, 4),
+    );
   }
+  $items['api/blocks/%'] = array(
+    'page callback' => 'headless_blocks',
+    'access callback' => TRUE,
+    'page arguments' => array(2),
+  );
   $items['admin/config/services/headless'] = array(
     'title' => 'Headless settings',
     'description' => 'Configure the entity types you wish to expose as json endpoints.',
@@ -141,14 +151,14 @@ function headless_views($view) {
  * Page callback for views v2.
  */
 function headless_views_v2($view, $display_id) {
-
+  $args = func_get_args();
   $config = config_get('headless.settings', 'views');
   if ($config[$view] != 1) {
     $json_error = ['code' => 404];
     backdrop_json_output($json_error);
     backdrop_exit();
   }
-  $return = _views_get_view_result($view, $display_id);
+  $return = _views_get_view_result($view, $display_id, $args);
 
   $my_json = [
     'results' => $return['results'],
@@ -178,13 +188,46 @@ function headless_paragraphs_item($type, $entity_id) {
 }
 
 /**
+ * Page callback for paragraph types v2.
+ */
+function headless_paragraphs_item_v2($type, $entity_id) {
+  $config = config_get('headless.settings', 'paragraphs');
+  if ($config[$type] != 1) {
+    $json_error = ['code' => 404];
+    backdrop_json_output($json_error);
+    backdrop_exit();
+  }
+  $result = paragraphs_item_load($entity_id)->view();
+  backdrop_json_output($result);
+  backdrop_exit();
+}
+
+/**
+ * Page callback for blocks.
+ *
+ * This is kept to make it backwards compatible
+ */
+function headless_blocks($block) {
+  $config = config_get('headless.settings', 'blocks');
+
+  if ($config[$block] != 1) {
+    $json_error = ['code' => 404];
+    backdrop_json_output($json_error);
+    backdrop_exit();
+  }
+
+  $result = config_get('block.custom.' . $block);
+  backdrop_json_output($result);
+  backdrop_exit();
+}
+
+/**
  * Helper function.
  *
  * We mimic the core function to add some extra pager data to the
  * returned value.
  */
-function _views_get_view_result($name, $display_id = NULL) {
-  $args = func_get_args();
+function _views_get_view_result($name, $display_id = NULL, $args = NULL) {
   array_shift($args);
   if (count($args)) {
     array_shift($args);

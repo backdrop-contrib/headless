@@ -42,19 +42,21 @@ Endpoints:
   * Terms: `/api/{vocabulary}/term/{id}`
   * Views: `/api/views/{view_name}`
     * Kept for backwards compatibility.
-  * Views (v2): `/api/v2/views/{view_name}/{display_id}{arguments}`
+  * Views (v2): `/api/v2/views/{view_name}/{display_id}/{contextual_arguments}{filter_arguments}`
     * `view_name` and `display_id` are required.
-    * `arguments` are NOT required and can be:
+    * `contextual_arguments` are NOT required. They can be any contextual arguments you have set in the view, separated by a `/`.
+    * `filter_arguments` are NOT required and can be:
       * ?page={x}
         * to show only results for a given page. Pages start at 0
         * example: `?page=0`
       * ?{exposed_filter}={value}
         * you can use also any exposed filter you have set for your view
-        * example: show only results with a title which contains a string use `?title=some_string` 
-     * You can combine arguments by chaning them wiht a `&`
+        * example: show only results with a title which contains a string use `?title=some_string`
+      * You can combine filter arguments by chaning them wiht a `&`
         * example: `?type=post&title=string`
-     * The best way to see what are the arguments you can use is by creating the exposed filters, then go to the view, do a search and look at the url that it generates.
+     * The best way to see what are the arguments you can use is by creating the exposed filters and/or contextual arguments, then go to the view, do a search and look at the url that it generates.
   * Paragraphs: `/api/paragraphs/{type}/{id}`
+  * Custom blocks: `/api/blocks/{block_name}`
 
 License
 -------
@@ -66,3 +68,4 @@ Maintainers
 -----------
 
 - Geoff St. Pierre (https://github.com/serundeputy/)
+- Robert Garrigos (https://github.com/robertgarrigos)
