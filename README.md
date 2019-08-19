@@ -56,6 +56,9 @@ Endpoints:
         * example: `?type=post&title=string`
      * The best way to see what are the arguments you can use is by creating the exposed filters and/or contextual arguments, then go to the view, do a search and look at the url that it generates.
   * Paragraphs: `/api/paragraphs/{type}/{id}`
+    * It shows load data for a given paragraphs item
+  * Paragraphs (v2): `/api/v2/paragraphs/{type}/{id}`
+    * It shows display data for a given paragraphs item
   * Custom blocks: `/api/blocks/{block_name}`
 
 License
