@@ -211,6 +211,81 @@ function headless_settings_form($form, &$form_state) {
     }
   }
 
+  // Get all available custom blocks.
+  $my_blocks = block_block_info();
+
+  $form['blocks'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Custom blocks'),
+    '#collapsible' => TRUE,
+  );
+
+  if (empty($my_blocks)) {
+    $no_blocks = t('No blocks defined yet.');
+    if (module_exists('block')) {
+      $no_blocks .= ' ' . l(t('Manage custom blocks'), 'admin/structure/block');
+    }
+    $form['blocks']['blocks-empty'] = array(
+      '#markup' => $no_blocks,
+    );
+  }
+  else {
+    $my_blocks_header = array(
+      'block' => t('Block'),
+      'endpoint_v1' => t('End point'),
+    );
+    foreach ($my_blocks as $key => $block) {
+      $my_blocks_options[$key] = array(
+        'block' => $key,
+        'endpoint_v1' => array(
+          'data' => array(
+            '#type' => 'link',
+            '#title' => '/api/blocks/' . $key,
+            '#href' => '/api/blocks/' . $key,
+          ),
+        ),
+      );
+    }
+    $form['blocks']['blocks-checkboxes'] = array(
+      '#type' => 'tableselect',
+      '#header' => $my_blocks_header,
+      '#options' => $my_blocks_options,
+      '#default_value' => _headless_get_default_options('blocks'),
+      '#js_select' => FALSE,
+    );
+
+    if (empty($paragraphs_types)) {
+      $form['paragraphs']['paragraphs-empty'] = array(
+        '#markup' => t('No paragraphs defined yet. <a href="@url">Manage paragraph types</a>', array('@url' => url('admin/structure/paragraphs'))),
+      );
+    }
+    else {
+      $paragraphs_type_header = array(
+        'paragraph' => t('paragraph'),
+        'endpoint' => t('End point'),
+      );
+      foreach ($paragraphs_types as $key => $type) {
+        $paragraphs_type_options[$key] = array(
+          'paragraph' => $type->name,
+          'endpoint' => array(
+            'data' => array(
+              '#type' => 'link',
+              '#title' => '/api/paragraphs/' . $key . '/{id}',
+              '#href' => '/api/paragraphs/' . $key . '/{id}',
+            ),
+          ),
+        );
+      }
+      $form['paragraphs']['paragraphs-checkboxes'] = array(
+        '#type' => 'tableselect',
+        '#header' => $paragraphs_type_header,
+        '#options' => $paragraphs_type_options,
+        '#default_value' => _headless_get_default_options('paragraphs'),
+        '#js_select' => FALSE,
+      );
+    }
+  }
+
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type' => 'submit',
@@ -274,6 +349,15 @@ function headless_settings_form_submit($form, &$form_state) {
       }
       config_set('headless.settings', 'paragraphs.' . $type, $val);
     }
+  }
+  foreach ($form_state['input']['blocks-checkboxes'] as $type => $value) {
+    if ($value != NULL) {
+      $val = 1;
+    }
+    else {
+      $val = 0;
+    }
+    config_set('headless.settings', 'blocks.' . $type, $val);
   }
 
   backdrop_set_message(t('The Headless configuration has been saved.'));
