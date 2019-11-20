@@ -164,7 +164,8 @@ function headless_views_v2($view, $display_id) {
     'results' => $return['results'],
     'total_items' => $return['total_items'],
     'items_per_page' => $return['items_per_page'],
-    'total_pages' => (isset($return['items_per_page'])) ?: ceil($return['total_items'] / $return['items_per_page']),
+    'total_pages' =>
+      (isset($return['items_per_page'])) ? ceil($return['total_items'] / $return['items_per_page']) : NULL,
     'current_page' => $return['current_page'],
   ];
   backdrop_json_output($my_json);
