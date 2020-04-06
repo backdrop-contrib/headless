@@ -84,30 +84,48 @@ function headless_menu() {
  */
 function headless_type($type, $nid) {
   $config = config_get('headless.settings', 'node');
+  // check if the JSON output is enabled for the selected type 
   if ($config[$type] != 1) {
     $json_error = ['code' => 404];
     backdrop_json_output($json_error);
     backdrop_exit();
   }
-  $my_json = node_load($nid);
-  backdrop_json_output($my_json);
-  backdrop_exit();
+  // load the requested node and check to see if types match or not
+  $requested_node = node_load($nid);
+  if ($requested_node->type == $type) {
+    backdrop_json_output($requested_node);
+    backdrop_exit();
+  }
+  else {
+    $json_error = ['code' => 404];
+    backdrop_json_output($json_error);
+    backdrop_exit();
+  }
 }
 
 /**
  * Page callback for node types v2.
  */
 function headless_type_v2($type, $nid) {
+  // check if the JSON output is enabled for the selected type 
   $config = config_get('headless.settings', 'node');
   if ($config[$type] != 1) {
     $json_error = ['code' => 404];
     backdrop_json_output($json_error);
     backdrop_exit();
   }
-  $node = node_load($nid);
-  $my_json = node_view($node);
-  backdrop_json_output($my_json);
-  backdrop_exit();
+  // load the requested node and check to see if types match or not
+  $requested_node = node_load($nid);
+  if ($requested_node->type == $type) {
+    $my_json = node_view($requested_node);
+    backdrop_json_output($my_json);
+    backdrop_exit();
+  } 
+  else {
+    $json_error = ['code' => 404];
+    backdrop_json_output($json_error);
+    backdrop_exit();
+  }
 }
 
 /**
