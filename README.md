@@ -59,6 +59,8 @@ Endpoints:
     * It shows load data for a given paragraphs item
   * Paragraphs (v2): `/api/v2/paragraphs/{type}/{id}`
     * It shows display data for a given paragraphs item
+  * Paragraphs (v3): `/api/v3/paragraphs/{id}`
+    * It shows display data for a given paragraphs item (doesn't need {type} argument)
   * Custom blocks: `/api/blocks/{block_name}`
 
 License
