@@ -52,7 +52,7 @@ script:
   - chmod +x /home/travis/web/core/scripts/run-tests.sh
   - >
     /home/travis/web/core/scripts/run-tests.sh
-    --url http://localhost
+    --url http://127.0.0.1
     --color
     --verbose
     BackdropHeadlessTestCase
