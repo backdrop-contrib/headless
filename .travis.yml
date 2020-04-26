@@ -29,6 +29,7 @@ before_install:
 
 script:
   # Check code standards
+  - cd /home/travis/build/backdrop-contrib/headless
   - >
     vendor/bin/phpcs -n
     --standard=vendor/backdrop/coder/coder_sniffer/Backdrop
@@ -38,7 +39,7 @@ script:
   # Simpletests
   - >
     /home/travis/web/core/scripts/run-tests.sh
-    --url http://localhost
+    --url http://127.0.0.1
     --color
     --verbose
     BackdropHeadlessTestCase
