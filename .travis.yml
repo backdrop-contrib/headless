@@ -9,9 +9,21 @@ cache:
 services:
   - mysql
 addons:
-  - mariadb: '10.0'
+  - mariadb: '10.3'
 before_install:
   - composer install
+  - git clone https://github.com/backdrop/backdrop /home/travis/web
+  - git clone https://github.com/drush-ops/drush /home/travis/web/drush
+  - git clone https://github.com/backdrop-contrib/backdrop-drush-extension /home/travis/web/drush/commands/backdrop
+  - cd /home/travis/web/drush && git checkout 8.x && composer install
+  - sudo ln -s /home/travis/web/drush/drush /usr/local/bin/drush
+  - mysql -e "drop database if exists backdrop"
+  - mysql -e "create database backdrop"
+  - cd /home/travis/web
+  - cp -av /home/travis/backdrop-contrib/headless /home/travis/web/modules/headless
+  - drush si --db-url=mysql://root:@127.0.0.1/backdrop
+  - drush en headless
+  - drush en simpletest
 
 script:
   # Check code standards
@@ -21,6 +33,7 @@ script:
     --ignore="vendor/*,README.md"
     --extensions=install,module,php,inc,theme,test .
 
-  # Simpletests setup.
+  # Simpletests
+  - /home/travis/web/core/scripts/run-tests.sh --url http://localhost --color --verbose
 
 
