@@ -20,7 +20,7 @@ before_install:
   - mysql -e "drop database if exists backdrop"
   - mysql -e "create database backdrop"
   - cd /home/travis/web
-  - cp -av /home/travis/backdrop-contrib/headless /home/travis/web/modules/headless
+  - cp -av ~/backdrop-contrib/headless /home/travis/web/modules/headless
   - drush si --db-url=mysql://root:@127.0.0.1/backdrop
   - drush en headless
   - drush en simpletest
