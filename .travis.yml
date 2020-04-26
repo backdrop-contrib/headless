@@ -49,6 +49,7 @@ script:
     --extensions=install,module,php,inc,theme,test .
 
   # Simpletests
+  - chmod +x /home/travis/web/core/scripts/run-tests.sh
   - >
     /home/travis/web/core/scripts/run-tests.sh
     --url http://localhost
