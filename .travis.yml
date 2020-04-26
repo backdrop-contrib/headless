@@ -50,6 +50,9 @@ script:
 
   # Simpletests
   - curl http://127.0.0.1/user/login
+  - touch /home/travis/web/robots.txt
+  - echo 'gff is best.' > /home/travis/web/robots.txt
+  - curl http://127.0.0.1/robots.txt
   - cd /home/travis/web
   - >
     php -d
