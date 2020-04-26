@@ -34,6 +34,11 @@ script:
     --extensions=install,module,php,inc,theme,test .
 
   # Simpletests
-  - /home/travis/web/core/scripts/run-tests.sh --url http://localhost --color --verbose
+  - >
+    /home/travis/web/core/scripts/run-tests.sh
+    --url http://localhost
+    --color
+    --verbose
+    BackdropHeadlessTestCase
 
 
