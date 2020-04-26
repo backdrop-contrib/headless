@@ -16,7 +16,7 @@ before_install:
   - sudo apt-get install apache2 libapache2-mod-fastcgi > /dev/null
   - sudo a2enmod rewrite actions fastcgi alias
   - sudo cp -f /home/travis/build/backdrop-contrib/headless/tests/misc/vhost.conf /etc/apache2/sites-available/default
-    #- sudo sed -i -e "s,/var/www,`pwd`,g" /etc/apache2/sites-available/default
+    #- sudo sed -i -e "s,/home/travis/web,`pwd`,g" /etc/apache2/sites-available/default
   - sudo apachectl restart
 
   # Start PHP-FPM. There is no process manager available to start PHP-FPM on
@@ -25,15 +25,15 @@ before_install:
   - $HOME/.phpenv/versions/`php -r "print PHP_VERSION;"`/sbin/php-fpm
 
   # Get Backdrop and the Drushies.
-  - git clone https://github.com/backdrop/backdrop /var/www
-  - git clone https://github.com/drush-ops/drush /var/www/drush
-  - git clone https://github.com/backdrop-contrib/backdrop-drush-extension /var/www/drush/commands/backdrop
-  - cd /var/www/drush && git checkout 8.x && composer install
-  - sudo ln -s /var/www/drush/drush /usr/local/bin/drush
+  - git clone https://github.com/backdrop/backdrop /home/travis/web
+  - git clone https://github.com/drush-ops/drush /home/travis/web/drush
+  - git clone https://github.com/backdrop-contrib/backdrop-drush-extension /home/travis/web/drush/commands/backdrop
+  - cd /home/travis/web/drush && git checkout 8.x && composer install
+  - sudo ln -s /home/travis/web/drush/drush /usr/local/bin/drush
   - mysql -e "drop database if exists backdrop"
   - mysql -e "create database backdrop"
-  - cd /var/www
-  - cp -a /home/travis/build/backdrop-contrib/headless /b/modules/headless
+  - cd /home/travis/web
+  - cp -a /home/travis/build/backdrop-contrib/headless /home/travis/web/modules/headless
   - drush si --db-url=mysql://root:@127.0.0.1/backdrop
   - drush en headless -y
   - drush en simpletest -y
@@ -50,7 +50,7 @@ script:
 
   # Simpletests
   - curl http://127.0.0.1/user/login
-  - cd /var/www
+  - cd /home/travis/web
   - >
     php -d
     display_errors="stderr"
