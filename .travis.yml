@@ -50,6 +50,7 @@ script:
 
   # Simpletests
   - chmod +x /home/travis/web/core/scripts/run-tests.sh
+  - cd /home/travis/web
   - >
     php -d
     display_errors="stderr"
