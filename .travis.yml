@@ -24,8 +24,8 @@ before_install:
   - cd /home/travis/web
   - cp -av /home/travis/build/backdrop-contrib/headless /home/travis/web/modules/headless
   - drush si --db-url=mysql://root:@127.0.0.1/backdrop
-  - drush en headless
-  - drush en simpletest
+  - drush en headless -y
+  - drush en simpletest -y
 
 script:
   # Check code standards
