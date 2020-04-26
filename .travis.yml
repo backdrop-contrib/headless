@@ -54,7 +54,7 @@ script:
   - >
     php -d
     display_errors="stderr"
-    /home/travis/web/core/scripts/run-tests.sh
+    ./core/scripts/run-tests.sh
     --concurrency 12
     --url 'http://127.0.0.1'
     --color
