@@ -53,7 +53,7 @@ script:
   - >
     php -d
     display_errors="stderr"
-    ./home/travis/web/core/scripts/run-tests.sh
+    /home/travis/web/core/scripts/run-tests.sh
     --concurrency 12
     --url 'http://localhost'
     --color
