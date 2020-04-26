@@ -301,32 +301,38 @@ function headless_settings_form($form, &$form_state) {
 function headless_settings_form_submit($form, &$form_state) {
   // Remove unnecessary values.
   form_state_values_clean($form_state);
-  foreach ($form_state['input']['node-checkboxes'] as $type => $value) {
-    if ($value != NULL) {
-      $val = 1;
+  if (isset($form_state['input']['node-checkboxes'])) {
+    foreach ($form_state['input']['node-checkboxes'] as $type => $value) {
+      if ($value != NULL) {
+        $val = 1;
+      }
+      else {
+        $val = 0;
+      }
+      config_set('headless.settings', 'node.' . $type, $val);
     }
-    else {
-      $val = 0;
-    }
-    config_set('headless.settings', 'node.' . $type, $val);
   }
-  foreach ($form_state['input']['vocabularies-checkboxes'] as $type => $value) {
-    if ($value != NULL) {
-      $val = 1;
+  if (isset($form_state['input']['vocabularies-checkboxes'])) {
+    foreach ($form_state['input']['vocabularies-checkboxes'] as $type => $value) {
+      if ($value != NULL) {
+        $val = 1;
+      }
+      else {
+        $val = 0;
+      }
+      config_set('headless.settings', 'vocabularies.' . $type, $val);
     }
-    else {
-      $val = 0;
-    }
-    config_set('headless.settings', 'vocabularies.' . $type, $val);
   }
-  foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
-    if ($value != NULL) {
-      $val = 1;
+  if (isset($form_state['input']['views-checkboxes'])) {
+    foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
+      if ($value != NULL) {
+        $val = 1;
+      }
+      else {
+        $val = 0;
+      }
+      config_set('headless.settings', 'views.' . $type, $val);
     }
-    else {
-      $val = 0;
-    }
-    config_set('headless.settings', 'views.' . $type, $val);
   }
   if (isset($form_state['input']['views-checkboxes'])) {
     foreach ($form_state['input']['views-checkboxes'] as $type => $value) {
@@ -350,14 +356,16 @@ function headless_settings_form_submit($form, &$form_state) {
       config_set('headless.settings', 'paragraphs.' . $type, $val);
     }
   }
-  foreach ($form_state['input']['blocks-checkboxes'] as $type => $value) {
-    if ($value != NULL) {
-      $val = 1;
+  if (isset($form_state['input']['blocks-checkboxes'])) {
+    foreach ($form_state['input']['blocks-checkboxes'] as $type => $value) {
+      if ($value != NULL) {
+        $val = 1;
+      }
+      else {
+        $val = 0;
+      }
+      config_set('headless.settings', 'blocks.' . $type, $val);
     }
-    else {
-      $val = 0;
-    }
-    config_set('headless.settings', 'blocks.' . $type, $val);
   }
 
   backdrop_set_message(t('The Headless configuration has been saved.'));
@@ -379,9 +387,12 @@ function headless_settings_form_submit($form, &$form_state) {
  */
 function _headless_get_default_options($types) {
   $checked = [];
-  foreach (config_get('headless.settings', $types) as $key => $type) {
-    if ($type != 0) {
-      $checked[$key] = TRUE;
+  $config = config_get('headless.settings', $types);
+  if ($config) {
+    foreach ($config as $key => $type) {
+      if ($type != 0) {
+        $checked[$key] = TRUE;
+      }
     }
   }
 

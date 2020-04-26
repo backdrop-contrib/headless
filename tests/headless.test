@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Base class for Headless tests.
+ */
+
+/**
+ * Test basic functionality.
+ */
+class BackdropHeadlessTestCase extends BackdropWebTestCase {
+
+  /**
+   * Use the standard profile.
+   */
+  protected $profile = 'standard';
+
+  /**
+   * Setup testing dependencies.
+   */
+  protected function setUp() {
+    parent::setUp(
+      array(
+        'headless'
+      )
+    );
+
+    $this->admin_user = $this->backdropCreateUser(array('administer site configuration'));
+    $this->backdropLogin($this->admin_user);
+  }
+
+  /**
+   * Test admin/config/services/headless.
+   */
+  protected function testHeadlessSettings() {
+    $this->backdropGet('admin/config/services/headless');
+    $this->assertNoFieldChecked('edit-node-checkboxes-page');
+
+    // Check Page content type on settings form.
+    $edit = array(
+      'node-checkboxes[page]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save Configuration'));
+    $this->assertFieldChecked('edit-node-checkboxes-page');
+    $this->assertNoFieldChecked('edit-node-checkboxes-post');
+    $this->assertNoFieldChecked('edit-vocabularies-checkboxes-tags');
+
+    // Check the tags vocabulary on the settings form.
+    unset($edit);
+    $edit = array(
+      'vocabularies-checkboxes[tags]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save Configuration'));
+    $this->assertFieldChecked('edit-vocabularies-checkboxes-tags');
+
+    // Check that views are unchecked and can be checked.
+    unset($edit);
+    $this->assertNoFieldChecked('edit-views-checkboxes-file-admin');
+
+    // Check the views-checkboxes[file_admin] view.
+    $edit = array(
+      'views-checkboxes[file_admin]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save Configuration'));
+  }
+
+  /**
+   * Test we json from /api/node/post/1.
+   */
+  protected function testApiPageEndpoint() {
+    // At first we should get a 404 before the post endpoint is exposed.
+    $json = $this->backdropGet('api/node/post/1');
+    $json = json_decode($json);
+    $this->assertTrue($json->code == '404');
+
+    // Enable post endpoint and check for json data.
+    $this->backdropGet('admin/config/services/headless');
+    $edit = array(
+      'node-checkboxes[post]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save Configuration'));
+    unset($json);
+    $json = $this->backdropGet('api/node/post/1');
+    $json = json_decode($json);
+    $title = !empty($json->title);
+    $this->assertTrue($title);
+    $type = $json->type == 'post';
+    $this->assertTrue($type);
+  }
+}
