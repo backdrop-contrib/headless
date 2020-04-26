@@ -38,8 +38,7 @@ script:
 
   # Simpletests
   - >
-    /home/travis/web/core/scripts/run-tests.sh
-    -u www-data
+    sudo -u www-data ./home/travis/web/core/scripts/run-tests.sh
     --url http://127.0.0.1
     --color
     --verbose
