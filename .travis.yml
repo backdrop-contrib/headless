@@ -61,6 +61,7 @@ script:
   - ls -alh
   - ls -alh /var
   - ls -alh /var/www
+  - ls -alh /var/www/html
     #- >
     #  php -d
     #  display_errors="stderr"
