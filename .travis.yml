@@ -55,6 +55,7 @@ script:
   - sudo chown travis:www-data -R /home/travis/web
   - chmod 2775 -R /home/travis/web
   - curl http://127.0.0.1/robots.txt
+  - curl http://127.0.0.1
   - cd /home/travis/web
   - ls -alh
     #- >
