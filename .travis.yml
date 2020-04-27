@@ -54,14 +54,15 @@ script:
   - echo 'gff is best.' > /home/travis/web/robots.txt
   - curl http://127.0.0.1/robots.txt
   - cd /home/travis/web
-  - >
-    php -d
-    display_errors="stderr"
-    ./core/scripts/run-tests.sh
-    --concurrency 12
-    --url 'http://127.0.0.1'
-    --color
-    --verbose
-    --force
-    BackdropHeadlessTestCase
+  - ls -alh
+    #- >
+    #  php -d
+    #  display_errors="stderr"
+    #  ./core/scripts/run-tests.sh
+    #  --concurrency 12
+    #  --url 'http://127.0.0.1'
+    #  --color
+    #  --verbose
+    #  --force
+    #  BackdropHeadlessTestCase
 
