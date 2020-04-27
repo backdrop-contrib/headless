@@ -17,7 +17,6 @@ before_install:
   - sudo a2enmod rewrite actions fastcgi alias
   - sudo cp -f /home/travis/build/backdrop-contrib/headless/tests/misc/vhost.conf /etc/apache2/sites-available/000-default.conf
     #- sudo sed -i -e "s,/home/travis/web,`pwd`,g" /etc/apache2/sites-available/default
-  - mkdir -p /home/travis/web
   - sudo apachectl restart
 
   # Start PHP-FPM. There is no process manager available to start PHP-FPM on
@@ -26,7 +25,7 @@ before_install:
   - $HOME/.phpenv/versions/`php -r "print PHP_VERSION;"`/sbin/php-fpm
 
   # Get Backdrop and the Drushies.
-  - rm -rf /var/www/html/*
+  - sudo rm -rf /var/www/html/*
   - git clone https://github.com/backdrop/backdrop /var/www/html
   - git clone https://github.com/drush-ops/drush /var/www/html/drush
   - git clone https://github.com/backdrop-contrib/backdrop-drush-extension /var/www/html/drush/commands/backdrop
