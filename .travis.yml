@@ -25,18 +25,17 @@ before_install:
   - $HOME/.phpenv/versions/`php -r "print PHP_VERSION;"`/sbin/php-fpm
 
   # Get Backdrop and the Drushies.
-  - sudo rm -rf /var/www/html/*
   - groups
   - sudo chown travis:travis -R /var/www
-  - git clone https://github.com/backdrop/backdrop /var/www/html
-  - git clone https://github.com/drush-ops/drush /var/www/html/drush
-  - git clone https://github.com/backdrop-contrib/backdrop-drush-extension /var/www/html/drush/commands/backdrop
-  - cd /var/www/html/drush && git checkout 8.x && composer install
-  - sudo ln -s /var/www/html/drush/drush /usr/local/bin/drush
+  - git clone https://github.com/backdrop/backdrop /var/www/web
+  - git clone https://github.com/drush-ops/drush /var/www/web/drush
+  - git clone https://github.com/backdrop-contrib/backdrop-drush-extension /var/www/web/drush/commands/backdrop
+  - cd /var/www/web/drush && git checkout 8.x && composer install
+  - sudo ln -s /var/www/web/drush/drush /usr/local/bin/drush
   - mysql -e "drop database if exists backdrop"
   - mysql -e "create database backdrop"
-  - cd /var/www/html
-  - cp -a /home/travis/build/backdrop-contrib/headless /var/www/html/modules/headless
+  - cd /var/www/web
+  - cp -a /home/travis/build/backdrop-contrib/headless /var/www/web/modules/headless
   - drush si --db-url=mysql://root:@127.0.0.1/backdrop
   - drush en headless -y
   - drush en simpletest -y
@@ -58,7 +57,7 @@ script:
   - curl http://127.0.0.1/user/login
   - ls -alh /var
   - ls -alh /var/www
-  - ls -alh /var/www/html
+  - ls -alh /var/www/web
     #- >
     #  php -d
     #  display_errors="stderr"
