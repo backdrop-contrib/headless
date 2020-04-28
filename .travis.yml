@@ -52,6 +52,7 @@ script:
   # Simpletests
     #- sudo chown travis:www-data -R /home/travis/web
     #- chmod 2775 -R /home/travis/web
+  - cd /var/www/web
   - curl http://127.0.0.1
   - curl http://127.0.0.1/web/user/login
   - ls -alh /var
