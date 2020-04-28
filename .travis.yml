@@ -13,10 +13,10 @@ before_install:
   - sudo apt-get update > /dev/null
     # - sudo apt-get install apache2 libapache2-mod-fastcgi > /dev/null
   - sudo apt-get install apache2 php7.2-fpm
-  - sudo a2enmod rewrite actions fpm
+  - sudo a2enmod rewrite actions proxy_fcgi setenvif
   - sudo cp -f /home/travis/build/backdrop-contrib/headless/tests/misc/vhost.conf /etc/apache2/sites-available/000-default.conf
     #- sudo sed -i -e "s,/home/travis/web,`pwd`,g" /etc/apache2/sites-available/default
-  - sudo apachectl restart
+  - sudo systemctl restart apache2
 
   # Start PHP-FPM. There is no process manager available to start PHP-FPM on
   # Travis CI currently, so we have to locate and enable it manually.
