@@ -12,7 +12,7 @@ before_install:
   # Install Apache and FastCGI extension to connect to PHP-FPM.
   - sudo apt-get update > /dev/null
     # - sudo apt-get install apache2 libapache2-mod-fastcgi > /dev/null
-  - sudo apt-get install apache2 php7.2-fpm fcgid_module proxy_fcgid_module
+  - sudo apt-get install apache2 php7.2-fpm mod_fcgid mod_proxy_fcgi
   - sudo a2enmod rewrite actions fastcgi alias
   - sudo cp -f /home/travis/build/backdrop-contrib/headless/tests/misc/vhost.conf /etc/apache2/sites-available/000-default.conf
     #- sudo sed -i -e "s,/home/travis/web,`pwd`,g" /etc/apache2/sites-available/default
