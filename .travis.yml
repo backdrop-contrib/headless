@@ -57,14 +57,14 @@ script:
   - ls -alh /var
   - ls -alh /var/www
   - ls -alh /var/www/web
-    #- >
-    #  php -d
-    #  display_errors="stderr"
-    #  ./core/scripts/run-tests.sh
-    #  --concurrency 12
-    #  --url 'http://127.0.0.1'
-    #  --color
-    #  --verbose
-    #  --force
-    #  BackdropHeadlessTestCase
+  - >
+    php -d
+    display_errors="stderr"
+    ./core/scripts/run-tests.sh
+    --concurrency 12
+    --url 'http://127.0.0.1'
+    --color
+    --verbose
+    --force
+    BackdropHeadlessTestCase
 
