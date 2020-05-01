@@ -23,10 +23,10 @@ before_install:
   - rm -f /home/travis/.ssh/id_rsa.pub
   
   # Get Backdrop and the Drushies.
-  - git clone https://github.com/backdrop/backdrop /var/www/web
+  - git clone https://github.com/backdrop/backdrop /home/travis/build/web
   - cd /var/www/web
-  - cp -a /home/travis/build/backdrop-contrib/headless /var/www/web/modules/headless
-  - cp /home/travis/build/backdrop-contrib/headless/tests/.lando.travis.yml /var/www/web/.lando.yml
+  - cp -a /home/travis/build/backdrop-contrib/headless /home/travis/build/web/modules/headless
+  - cp /home/travis/build/backdrop-contrib/headless/tests/.lando.travis.yml /home/travis/build/web/.lando.yml
 
 script:
   # Check code standards
