@@ -1,21 +1,61 @@
 language: php
 dist: xenial
+# This can be set to whatever you want since Lando is taking care of your deps
 php:
-  - 7.2
+  - 7.3
+
 cache:
   directories:
     - $HOME/.composer/cache/files
     - $HOME/.composer/cache/repo
+    - $TMPDIR/phpstan/cache
+
 services:
-  - mysql
-addons:
-  - mariadb: '10.0'
+  - docker
+
 before_install:
-  - composer install
+  # Install Hyperdrive
+  - sudo apt-get -y update
+  - sudo apt-get -y install cgroup-bin curl
+  - sudo bash -c "curl -Ls https://github.com/lando/hyperdrive/releases/download/v0.6.1/hyperdrive > /usr/local/bin/hyperdrive"
+  - sudo chmod +x /usr/local/bin/hyperdrive
+  - rm -f /home/travis/.ssh/id_rsa
+  - rm -f /home/travis/.ssh/id_rsa.pub
+  
+  # Get Backdrop and the Drushies.
+  - git clone https://github.com/backdrop/backdrop /home/travis/build/web
+  - cp -a /home/travis/build/backdrop-contrib/headless /home/travis/build/web/modules/headless
+  - cp /home/travis/build/backdrop-contrib/headless/tests/.lando.travis.yml /home/travis/build/web/.lando.yml
 
 script:
   # Check code standards
-  - vendor/bin/phpcs -n --standard=vendor/backdrop/coder/coder_sniffer/Backdrop --ignore="vendor/*,README.md" --extensions=install,module,php,inc,theme .
+  - cd /home/travis/build/backdrop-contrib/headless
+  - composer install
+  - >
+    vendor/bin/phpcs -n
+    --standard=vendor/backdrop/coder/coder_sniffer/Backdrop
+    --ignore="vendor/*,README.md"
+    --extensions=install,module,php,inc,theme,test .
+  
+  # Add Repo key to prevent hyperdrive install errors.
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
 
-  # Unit tests
+  # Setup hyperdrive
+  - hyperdrive -y --name "James T. Kirk" --email kirk@enterprise.mil
 
+  # Start Lando
+  - cd /home/travis/build/web
+  - lando start -v
+  
+  # Log failures so we don't get stuck on a failure
+  - mkdir -p ~/.lando/cache
+  - touch ~/.lando/cache/report_errors
+  - echo "true" > ~/.lando/cache/report_errors
+
+  # Install our Backdrop app.
+  - lando drush si --db-url=mysql://backdrop:backdrop@database/backdrop
+  - lando drush en headless -y
+  - lando drush en simpletest -y
+
+  # Run non-db required tests eg linting/code standards/unit tests
+  - lando test BackdropHeadlessTestCase 

@@ -1,0 +1,5 @@
+[BackdropHeadlessTestCase]
+name = headless functionality
+description = Basic tests for the headless module.
+group = Headless
+file = headless.test
