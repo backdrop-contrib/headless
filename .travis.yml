@@ -23,7 +23,7 @@ before_install:
   - rm -f /home/travis/.ssh/id_rsa.pub
   
   # Get Backdrop and the Drushies.
-  - sudo chown travis:travis -R /var/www
+  #- sudo chown travis:travis -R /var/www
   - git clone https://github.com/backdrop/backdrop /var/www/web
   - cd /var/www/web
   - cp -a /home/travis/build/backdrop-contrib/headless /var/www/web/modules/headless
