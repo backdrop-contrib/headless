@@ -1,0 +1,27 @@
+# Backdrop recipe
+name: backdrop-contrib
+
+# Start with the default Backdrop recipe
+recipe: backdrop
+
+# Configure the Backdrop recipe
+config:
+  via: nginx
+  php: '7.3'
+  webroot: .
+  backdrush: 1.x-1.x
+  database: mariadb:10.3
+
+tooling:
+  drush:
+    service: appserver
+    cmd: drush --root=/app --uri=https://backdrop-contrib.lndo.site
+  phpcs:
+    service: appserver
+    cmd:
+      - "/app/vendor/bin/phpcs -n --report=full --standard=/app/vendor/backdrop/coder/coder_sniffer/Backdrop --ignore=vendor/*,README.md --extensions=install,module,php,inc,theme"
+  test:
+    service: appserver
+    cmd:
+      - /app/core/scripts/run-tests.sh --url https://backdrop-contrib.lndo.site --color --verbose
+
