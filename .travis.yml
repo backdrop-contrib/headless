@@ -24,7 +24,6 @@ before_install:
   
   # Get Backdrop and the Drushies.
   - git clone https://github.com/backdrop/backdrop /home/travis/build/web
-  - cd /var/www/web
   - cp -a /home/travis/build/backdrop-contrib/headless /home/travis/build/web/modules/headless
   - cp /home/travis/build/backdrop-contrib/headless/tests/.lando.travis.yml /home/travis/build/web/.lando.yml
 
@@ -45,7 +44,7 @@ script:
   - hyperdrive -y --name "James T. Kirk" --email kirk@enterprise.mil
 
   # Start Lando
-  - cd /var/www/web
+  - cd /home/travis/build/web
   - lando start -v
   
   # Log failures so we don't get stuck on a failure
