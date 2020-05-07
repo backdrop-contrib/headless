@@ -1,7 +1,7 @@
 Headless
 ========
 
-[![Build Status](https://travis-ci.org/backdrop-contrib/i18n.svg?branch=1.x)](https://travis-ci.org/backdrop-contrib/i18n)
+[![Build Status](https://travis-ci.org/backdrop-contrib/headless.svg?branch=1.x-1.x)](https://travis-ci.org/backdrop-contrib/headless)
 
 Headless is a read only API to deliver Backdrop nodes, terms, views, and
 paragraphs as json endpoints.
