@@ -187,16 +187,32 @@ function headless_settings_form($form, &$form_state) {
     else {
       $paragraphs_type_header = array(
         'paragraph' => t('paragraph'),
-        'endpoint' => t('End point'),
+        'endpoint_v1' => t('End point v1'),
+        'endpoint_v2' => t('End point v2'),
+        'endpoint_v3' => t('End point v3'),
       );
       foreach ($paragraphs_types as $key => $type) {
         $paragraphs_type_options[$key] = array(
           'paragraph' => $type->name,
-          'endpoint' => array(
+          'endpoint_v1' => array(
             'data' => array(
               '#type' => 'link',
               '#title' => '/api/paragraphs/' . $key . '/{id}',
               '#href' => '/api/paragraphs/' . $key . '/{id}',
+            ),
+          ),
+          'endpoint_v2' => array(
+            'data' => array(
+              '#type' => 'link',
+              '#title' => '/api/v2/paragraphs/' . $key . '/{id}',
+              '#href' => '/api/v2/paragraphs/' . $key . '/{id}',
+            ),
+          ),
+          'endpoint_v3' => array(
+            'data' => array(
+              '#type' => 'link',
+              '#title' => '/api/v3/paragraphs/{id}',
+              '#href' => '/api/v3/paragraphs/{id}',
             ),
           ),
         );
@@ -285,6 +301,15 @@ function headless_settings_form($form, &$form_state) {
       );
     }
   }
+  $form['alias'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('URL Alias'),
+    '#collapsible' => FALSE,
+  );
+  $form['alias']['alias-description'] = array(
+    '#markup' => t('Remember you can use an api call for the url alias in the form of:')
+    . " " . l(t('/api/router/{url_alias}'), 'api/router/{url_alias}'),
+  );
 
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
