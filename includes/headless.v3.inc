@@ -9,8 +9,7 @@
 /**
  * Page callback for paragraph types v3.
  */
-function headless_paragraphs_item_v3($entity_id)
-{
+function headless_paragraphs_item_v3($entity_id) {
   $config = config_get('headless.settings', 'paragraphs');
   $p = paragraphs_item_load($entity_id);
   if ($config[$p->bundle] != 1) {

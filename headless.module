@@ -8,83 +8,82 @@
 /**
  * Implements hook_menu().
  */
-function headless_menu()
-{
-  $items = array();
-  // Return JSON for individual nodes.
-  $items['api/node/%/%'] = array(
-    'page callback' => 'headless_type',
-    'access callback' => true,
-    'page arguments' => array(2, 3),
-  );
-  $items['api/v2/node/%/%'] = array(
-    'page callback' => 'headless_type_v2',
-    'access callback' => true,
-    'page arguments' => array(3, 4),
-    'file' => 'includes/headless.v2.inc',
-  );
-  // Return JSON for individual terms.
-  $items['api/%/term/%'] = array(
-    'page callback' => 'headless_term_item',
-    'access callback' => true,
-    'page arguments' => array(1, 3),
-  );
-  $items['api/views/%'] = array(
-    'page callback' => 'headless_views',
-    'access callback' => true,
-    'page arguments' => array(2),
-  );
-  $items['api/v2/views/%/%'] = array(
-    'page callback' => 'headless_views_v2',
-    'access callback' => true,
-    'page arguments' => array(3, 4),
-    'file' => 'includes/headless.v2.inc',
-  );
-  if (module_exists('paragraphs')) {
-    // Return json for individual paragraphs.
-    $items['api/paragraphs/%/%'] = array(
-      'page callback' => 'headless_paragraphs_item',
-      'access callback' => true,
-      'page arguments' => array(2, 3),
-    );
-    $items['api/v2/paragraphs/%/%'] = array(
-      'page callback' => 'headless_paragraphs_item_v2',
-      'access callback' => true,
-      'page arguments' => array(3, 4),
-      'file' => 'includes/headless.v2.inc',
-    );
-    $items['api/v3/paragraphs/%'] = array(
-      'page callback' => 'headless_paragraphs_item_v3',
-      'access callback' => true,
-      'page arguments' => array(3),
-      'file' => 'includes/headless.v3.inc',
-    );
-  }
-  $items['api/blocks/%'] = array(
-    'page callback' => 'headless_blocks',
-    'access callback' => true,
-    'page arguments' => array(2),
-  );
-  $items['admin/config/services/headless'] = array(
-    'title' => 'Headless settings',
-    'description' => 'Configure the entity types you wish to expose as json endpoints.',
-    'page callback' => 'backdrop_get_form',
-    'page arguments' => array('headless_settings_form'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'includes/headless.admin.inc',
-  );
+function headless_menu() {
+    $items = [];
+    // Return JSON for individual nodes.
+    $items['api/node/%/%'] = [
+        'page callback' => 'headless_type',
+        'access callback' => TRUE,
+        'page arguments' => [2, 3],
+    ];
+    $items['api/v2/node/%/%'] = [
+        'page callback' => 'headless_type_v2',
+        'access callback' => TRUE,
+        'page arguments' => [3, 4],
+        'file' => 'includes/headless.v2.inc',
+    ];
+    // Return JSON for individual terms.
+    $items['api/%/term/%'] = [
+        'page callback' => 'headless_term_item',
+        'access callback' => TRUE,
+        'page arguments' => [1, 3],
+    ];
+    $items['api/views/%'] = [
+        'page callback' => 'headless_views',
+        'access callback' => TRUE,
+        'page arguments' => [2],
+    ];
+    $items['api/v2/views/%/%'] = [
+        'page callback' => 'headless_views_v2',
+        'access callback' => TRUE,
+        'page arguments' => [3, 4],
+        'file' => 'includes/headless.v2.inc',
+    ];
+    if (module_exists('paragraphs')) {
+        // Return json for individual paragraphs.
+        $items['api/paragraphs/%/%'] = [
+            'page callback' => 'headless_paragraphs_item',
+            'access callback' => TRUE,
+            'page arguments' => [2, 3],
+        ];
+        $items['api/v2/paragraphs/%/%'] = [
+            'page callback' => 'headless_paragraphs_item_v2',
+            'access callback' => TRUE,
+            'page arguments' => [3, 4],
+            'file' => 'includes/headless.v2.inc',
+        ];
+        $items['api/v3/paragraphs/%'] = [
+            'page callback' => 'headless_paragraphs_item_v3',
+            'access callback' => TRUE,
+            'page arguments' => [3],
+            'file' => 'includes/headless.v3.inc',
+        ];
+    }
+    $items['api/blocks/%'] = [
+        'page callback' => 'headless_blocks',
+        'access callback' => TRUE,
+        'page arguments' => [2],
+    ];
+    $items['admin/config/services/headless'] = [
+        'title' => 'Headless settings',
+        'description' => 'Configure the entity types you wish to expose as json endpoints.',
+        'page callback' => 'backdrop_get_form',
+        'page arguments' => ['headless_settings_form'],
+        'access arguments' => ['administer site configuration'],
+        'file' => 'includes/headless.admin.inc',
+    ];
 
-  // Router: allow API queries via string paths.
-  $items['api/router/%'] = array(
-    'title' => 'Headless router',
-    'description' => 'Allow queries via string like /api/my-node-title',
-    'page callback' => 'headless_router',
-    'page arguments' => array(2),
-    'access callback' => true,
-    'file' => 'includes/headless.router.inc',
-  );
+    // Router: allow API queries via string paths.
+    $items['api/router/%'] = [
+        'title' => 'Headless router',
+        'description' => 'Allow queries via string like /api/my-node-title',
+        'page callback' => 'headless_router',
+        'page arguments' => [2],
+        'access callback' => TRUE,
+        'file' => 'includes/headless.router.inc',
+    ];
 
-  return $items;
+    return $items;
 }
 
 /**
@@ -92,41 +91,40 @@ function headless_menu()
  *
  * This is kept to make it backwards compatible
  */
-function headless_type($type, $nid)
-{
-  $config = config_get('headless.settings', 'node');
-  // Check if the JSON output is enabled for the selected type.
-  if ($config[$type] != 1) {
-    $json_error = ['code' => 404];
-    backdrop_json_output($json_error);
-    backdrop_exit();
-  }
-  // Load the requested node and check to see if types match or not.
-  $requested_node = node_load($nid);
-  if ($requested_node->type == $type) {
-    backdrop_json_output($requested_node);
-    backdrop_exit();
-  } else {
-    $json_error = ['code' => 404];
-    backdrop_json_output($json_error);
-    backdrop_exit();
-  }
+function headless_type($type, $nid) {
+    $config = config_get('headless.settings', 'node');
+    // Check if the JSON output is enabled for the selected type.
+    if ($config[$type] != 1) {
+        $json_error = ['code' => 404];
+        backdrop_json_output($json_error);
+        backdrop_exit();
+    }
+    // Load the requested node and check to see if types match or not.
+    $requested_node = node_load($nid);
+    if ($requested_node->type == $type) {
+        backdrop_json_output($requested_node);
+        backdrop_exit();
+    }
+    else {
+        $json_error = ['code' => 404];
+        backdrop_json_output($json_error);
+        backdrop_exit();
+    }
 }
 
 /**
  * Page callback for terms.
  */
-function headless_term_item($vocab, $tid)
-{
-  $config = config_get('headless.settings', 'vocabularies');
-  if ($config[$vocab] != 1) {
-    $json_error = ['code' => 404];
-    backdrop_json_output($json_error);
+function headless_term_item($vocab, $tid) {
+    $config = config_get('headless.settings', 'vocabularies');
+    if ($config[$vocab] != 1) {
+        $json_error = ['code' => 404];
+        backdrop_json_output($json_error);
+        backdrop_exit();
+    }
+    $my_json = taxonomy_term_load($tid);
+    backdrop_json_output($my_json);
     backdrop_exit();
-  }
-  $my_json = taxonomy_term_load($tid);
-  backdrop_json_output($my_json);
-  backdrop_exit();
 }
 
 /**
@@ -134,60 +132,55 @@ function headless_term_item($vocab, $tid)
  *
  * This is kept to make it backwards compatible
  */
-function headless_views($view)
-{
-  $config = config_get('headless.settings', 'views');
-  if ($config[$view] != 1) {
-    $json_error = ['code' => 404];
-    backdrop_json_output($json_error);
+function headless_views($view) {
+    $config = config_get('headless.settings', 'views');
+    if ($config[$view] != 1) {
+        $json_error = ['code' => 404];
+        backdrop_json_output($json_error);
+        backdrop_exit();
+    }
+    $results = views_get_view_result($view);
+    $count = count($results);
+    $my_json = [
+        'results' => $results,
+        'count' => $count,
+    ];
+    backdrop_json_output($my_json);
     backdrop_exit();
-  }
-  $results = views_get_view_result($view);
-  $count = count($results);
-  $my_json = [
-    'results' => $results,
-    'count' => $count,
-  ];
-  backdrop_json_output($my_json);
-  backdrop_exit();
 }
-
 
 /**
  * Page callback for paragraph types.
  */
-function headless_paragraphs_item($type, $entity_id)
-{
-  $config = config_get('headless.settings', 'paragraphs');
-  if ($config[$type] != 1) {
-    $json_error = ['code' => 404];
-    backdrop_json_output($json_error);
+function headless_paragraphs_item($type, $entity_id) {
+    $config = config_get('headless.settings', 'paragraphs');
+    if ($config[$type] != 1) {
+        $json_error = ['code' => 404];
+        backdrop_json_output($json_error);
+        backdrop_exit();
+    }
+    $result = paragraphs_item_load($entity_id);
+    backdrop_json_output($result);
     backdrop_exit();
-  }
-  $result = paragraphs_item_load($entity_id);
-  backdrop_json_output($result);
-  backdrop_exit();
 }
-
 
 /**
  * Page callback for blocks.
  *
  * This is kept to make it backwards compatible
  */
-function headless_blocks($block)
-{
-  $config = config_get('headless.settings', 'blocks');
+function headless_blocks($block) {
+    $config = config_get('headless.settings', 'blocks');
 
-  if ($config[$block] != 1) {
-    $json_error = ['code' => 404];
-    backdrop_json_output($json_error);
+    if ($config[$block] != 1) {
+        $json_error = ['code' => 404];
+        backdrop_json_output($json_error);
+        backdrop_exit();
+    }
+
+    $result = config_get('block.custom.' . $block);
+    backdrop_json_output($result);
     backdrop_exit();
-  }
-
-  $result = config_get('block.custom.' . $block);
-  backdrop_json_output($result);
-  backdrop_exit();
 }
 
 /**
@@ -196,37 +189,38 @@ function headless_blocks($block)
  * We mimic the core function to add some extra pager data to the
  * returned value.
  */
-function _views_get_view_result($name, $display_id = null, $args = null)
-{
-  array_shift($args);
-  if (count($args)) {
+function _views_get_view_result($name, $display_id = NULL, $args = NULL) {
     array_shift($args);
-  }
-
-  $view = views_get_view($name);
-  $return = array();
-  if (is_object($view)) {
-    if (is_array($args)) {
-      $view->set_arguments($args);
+    if (count($args)) {
+        array_shift($args);
     }
-    if (is_string($display_id)) {
-      $view->set_display($display_id);
-    } else {
-      $view->init_display();
+
+    $view = views_get_view($name);
+    $return = [];
+    if (is_object($view)) {
+        if (is_array($args)) {
+            $view->set_arguments($args);
+        }
+        if (is_string($display_id)) {
+            $view->set_display($display_id);
+        }
+    else {
+            $view->init_display();
+        }
+        $view->pre_execute();
+        $view->execute();
+
+        $total_items = $view->query->pager->total_items;
+        $items_per_page = $view->query->pager->options['items_per_page'];
+        $current_page = $view->query->pager->current_page;
+
+        $return['total_items'] = $total_items;
+        $return['items_per_page'] = $items_per_page;
+        $return['current_page'] = $current_page;
+        $return['results'] = $view->result;
+        return $return;
     }
-    $view->pre_execute();
-    $view->execute();
-
-    $total_items = $view->query->pager->total_items;
-    $items_per_page = $view->query->pager->options['items_per_page'];
-    $current_page = $view->query->pager->current_page;
-
-    $return['total_items'] = $total_items;
-    $return['items_per_page'] = $items_per_page;
-    $return['current_page'] = $current_page;
-    $return['results'] = $view->result;
-    return $return;
-  } else {
-    return array();
-  }
+    else {
+        return [];
+    }
 }
