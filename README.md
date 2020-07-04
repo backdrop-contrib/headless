@@ -64,6 +64,7 @@ Endpoints:
   * Paragraphs (v3): `/api/v3/paragraphs/{id}`
     * It shows display data for a given paragraphs item (doesn't need {type} argument)
   * Custom blocks: `/api/blocks/{block_name}`
+  * URL Alias: `/api/router/{url_alias}`
 
 License
 -------
